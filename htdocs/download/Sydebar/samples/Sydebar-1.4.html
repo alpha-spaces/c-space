@@ -1,0 +1,547 @@
+<!DOCTYPE html 
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><?xml-stylesheet type="text/css" href="#style"?><!--
+A browser sidebar generator for Python documentation
+Copyright (C) 2008 Remy Blank
+
+This file is part of Sydebar.
+
+This program is free software; you can redistribute it and/or modify it 
+under the terms of the GNU General Public License as published by the 
+Free Software Foundation, version 2. A copy of the license is provided 
+in the file COPYING.
+
+This program is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+Public License for more details.
+--><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta name="author" content="Remy Blank"/><meta name="copyright" content="Copyright (C) 2008 Remy Blank"/><meta name="description" content="A browser sidebar generator for Python documentation"/><meta name="keywords" content="Python sidebar, Python, documentation, sidebar, reference"/><link rel="shortcut icon" href="data:image/vnd.microsoft.icon;base64,AAABAAMAEBAAAAEAIABoBAAANgAAACAgAAABACAAqBAAAJ4EAAAwMAAAAQAgAKglAABGFQAAKAAAABAAAAAgAAAAAQAgAAAAAABABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAHQAAADUAAABCAAAARwAAAEUAAAA4AAAAHwAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP9DxTDnT+swv0v33JtD//xzM//8Zx/rYEpfAewAAADsAAAASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE7e/fdE2///Otj//zDU//8m0P///////xvL/fcAAABAAAAAHAAAAAkAAAAFAAAAAQAAAAIAAAAJAAAAEwAAABJY4///Tt///0Tb//861///MNP//yXQ//8czP//AAAAQQAAADUAAAAsAAAAHgAAAAsAAAAIAAAAIQAAADwAAAA1Yuf//1jj//9O3///PcfoqjTF66kqwuupIb7rqRi766kYu+upEpvGeQAAAEEAAAAgo3VAb6JzPfeccDr/AAAAS2zr//9i5///WOP//07f//9D2///Odf//y/T//8kz///HMz//xzM//8SmsJ6AAAANK59Q9eoeUH/oXQ9/0syHFtv4/WzbOv//2Hn//9X4///Td///0Pb//851///LtP//yTP//8czP//GsHzwgAAAEGygUb3rX1E/6Z4QP+RZzaqAAAATm7h8qZq6f33Yeb//1fj//9N3///Qtv//zjX//8u0///JM///xvL/fcAAABHuYdK/7KBR/+rfEP/pXY//5NpNrZFMRtcAAAATAAAAEgAAABHAAAAQUXD4mtB2f33ONf//y3T//8jz///AAAARr6LTf+3hUn/sIBG/6p7Qv+jdT7/nHA7/5ZqN/+UaTb/kmg194dgMrYAAABPRc7siELa//831v//LdP//wAAAD3Dj1D/vIlM/7WESP+vf0X/qHlB/6F0Pf+bbzr/lGk2/5RpNv+UaTb/h2AytgAAAENL3v//Qdr//zbV/e0AAAAkxpFSvcGNT/+7iEv/tINI/619RP+meED/oHM9/5ltOf+UaTb/lGk2/5RpNv8AAABIVeL//0rd/fc+1fmCAAAACgAAAADEj05+v4pMoLaFSKGtfUOjoXQ9p5ZsOaqQZjaql2w4/5Rp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"/><title>Python documentation</title><base target="_content"/><style id="style" type="text/css">
+.hidden {
+    display: none;
+}
+:link, :visited {
+    text-decoration: none;
+    border: none;
+}
+body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font: normal 11px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+    cursor: auto !important;
+}
+#menu {
+    position: fixed;
+    z-index: 3;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    background: #9cf;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#menu ul {
+    margin: 0;
+    padding-left: 0;
+    display: inline;
+}
+#menu ul li {
+    margin: 0;
+    border-right: 1px solid #fff;
+    padding: 0 0.5em;
+    display: inline;
+    list-style: none;
+    color: #036;
+    cursor: pointer;
+}
+#menu ul li:hover {
+    background: #feb;
+}
+#menu ul li.current, #menu ul li.current:hover {
+    background: #fff;
+    color: #888;
+    cursor: default;
+}
+#menu p.version {
+    margin: 0;
+    padding: 0 0.5em;
+    display: inline;
+    color: #fff;
+}
+#menu p.version :link, #menu p.version :visited {
+    color: inherit;
+}
+#content {
+    z-index: 2;
+    margin: 0;
+    padding: 1.6em 6px 0.2em 6px;
+    background: #fff;
+}
+#content ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+#content :link, #content :visited {
+    display: block;
+    color: #369;
+}
+#content ul ul li :link, #content ul ul li :visited {
+    color: #579;
+}
+#content ul ul ul li :link, #content ul ul ul li :visited {
+    color: #789;
+}
+#content :link:hover, #content :visited:hover {
+    background: #feb;
+}
+#content ul.tree {
+    padding-left: 12px;
+}
+#content ul.tree li {
+    padding: 0.1em 0;
+}
+#content ul.tree li img {
+    position: absolute;
+}
+#content ul.tree li a {
+    margin-left: 20px;
+}
+#content ul.tree ul {
+    margin-left: 5px;
+    border-left: 1px solid #ccc;
+    padding-left: 8px;
+}
+#content ul.tree tt {
+    font-weight: bold;
+}
+#content .search-heading {
+    margin: 0.5em 0 0.3em 0;
+    font-size: 1.5em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+#content .search-heading :link, #content .search-heading :visited {
+    color: #000;
+}
+#content .search-form {
+    margin: 0;
+    white-space: nowrap;
+}
+#content .search-field {
+    margin-bottom: 0.2em;
+    border: 1px solid #888;
+    vertical-align: top;
+    font-size: inherit;
+}
+#content .search-button, #content .clear-button {
+    margin-left: 5px;
+    border: 1px solid #888;
+    vertical-align: top;
+}
+#content .search-button:hover, #content .clear-button:hover {
+    background: #feb;
+}
+#content .search-button { }
+#content .clear-button { }
+#content .search-radio {
+    margin-left: 0.3em;
+    display: block;
+}
+#measure {
+    visibility: hidden;
+}
+        </style><script type="text/javascript">
+// <![CDATA[
+images = {}
+imageSizes = {};
+
+whitespaceOnly = /^\s*$/;
+
+/*
+ * Define missing functions.
+ */
+if(!Array.prototype.forEach) {
+    Array.prototype.forEach = function(fun /*, thisp*/) {
+        var len = this.length;
+        if(typeof fun != "function")
+            throw new TypeError();
+        var thisp = arguments[1];
+        for(var i = 0; i < len; ++i) {
+            if(i in this)
+                fun.call(thisp, this[i], i, this);
+        }
+    };
+}
+
+if(!Array.prototype.some) {
+    Array.prototype.some = function(fun /*, thisp*/) {
+        var len = this.length;
+        if(typeof fun != "function")
+            throw new TypeError();
+        var thisp = arguments[1];
+        for(var i = 0; i < len; ++i) {
+            if (i in this && fun.call(thisp, this[i], i, this))
+                return true;
+        }
+        return false;        
+    };
+} 
+
+/*
+ * Return a partial application of the given function.
+ */
+function partial(f)
+{
+    var args = Array.prototype.slice.call(arguments, 1);
+    return function() { return f.apply(this, args); };
+}
+
+/*
+ * Get a stylesheet by ID.
+ */
+function getStyleSheetById(id)
+{
+    var len = document.styleSheets.length;
+    for(var i = 0; i < len; ++i) {
+        var styleSheet = document.styleSheets[i];
+        if(styleSheet.ownerNode.id === id)
+            return styleSheet;
+    }
+    return null;
+}
+
+/*
+ * Set style attributes on a stylesheet.
+ */
+function setStyles(styleSheet, styles)
+{
+    Array.prototype.forEach.call(styleSheet.cssRules, function(rule, i, array) {
+        var style = styles[rule.selectorText];
+        if(style) {
+            for(var name in style)
+                rule.style[name] = style[name];
+        }
+    });
+}
+
+/*
+ * Set padding on a button so that it has the given size.
+ */
+function setButtonPadding(image, size, selector)
+{
+    var height = imageSizes[image][1];
+    var padding1 = Math.floor((size - height) / 2);
+    var padding2 = (size - height - padding1);
+    var style = {};
+    style[selector] = {padding: padding1 + "px " + padding2 + "px " + padding2 + "px " + padding1 + "px"};
+    setStyles(getStyleSheetById("style"), style);
+    
+}
+
+/*
+ * Get an URI parameter by name.
+ */
+function getUriParameter(name, defValue)
+{
+    var param = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    var match = param.exec(window.location.search);
+    if(match !== null)
+        return decodeURIComponent(match[1]);
+    return defValue;
+}
+
+// Set font size in body style if text size is specified in URI
+fontSize = getUriParameter("fontSize");
+if(fontSize !== undefined)
+    setStyles(getStyleSheetById("style"), {"body": { fontSize: fontSize + "px"}});
+delete fontSize;
+
+/*
+ * Perform initializations at page load-time.
+ */
+function onLoad(id)
+{
+    // Get image data and measure image sizes
+    Array.prototype.forEach.call(document.getElementById("measure").getElementsByTagName("IMG"), function(img, i, array) {
+        images[img.id] = img.src;
+        imageSizes[img.id] = [img.width, img.height];
+    });
+
+    // Get parameters from URI
+    var fieldWidth = getUriParameter("fieldWidth");
+    id = getUriParameter("panel", id);
+    
+    // Adjust margin of plus and minus buttons according to row height
+    var textHeight = document.getElementById("text-sample").clientHeight;
+    var margin = Math.floor((textHeight - imageSizes["image-plus"][1]) / 2);
+    setStyles(getStyleSheetById("style"), {"#content ul.tree li img": {
+        marginTop: margin + "px"}});
+    
+    // Set images
+    Array.prototype.forEach.call(document.getElementsByTagName("IMG"), function(img, i, array) {
+        if(img.alt.slice(0, 6) === "image-") {
+            img.src = images[img.alt];
+            img.alt = "";
+        }
+    });
+    
+    // Adjust padding of search submit buttons
+    var fieldHeight = document.getElementById("search-input").clientHeight;
+    setButtonPadding("image-search", fieldHeight, "#content .search-button");
+    setButtonPadding("image-clear", fieldHeight, "#content .clear-button");
+    
+    // Empty all text input fields and set image input fields
+    Array.prototype.forEach.call(document.getElementsByTagName("INPUT"), function(input, i, array) {
+        if(input.type === "text") {
+            input.value = "";
+            if(fieldWidth !== undefined)
+                input.size = fieldWidth;
+        } else if((input.type === "image") && (input.alt.slice(0, 6) === "image-")) {
+            input.src = images[input.alt];
+            input.alt = "";
+        }
+    });
+    
+    // Activate default panel
+    var menu = document.getElementById("menu-" + id);
+    if(menu)
+        onMenuClick(menu, "panel-" + id);
+    else
+        document.getElementById("measure").className = "hidden";
+}
+
+/*
+ * React to a menu bar click.
+ */
+function onMenuClick(item)
+{
+    // Set the new menu item as current
+    Array.prototype.forEach.call(item.parentNode.getElementsByTagName("LI"), function(each, i, array) {
+        each.className = (each === item)? "current": "";
+    });
+    
+    // Show the new panel
+    var panel = document.getElementById("panel-" + item.id.slice(5));
+    var content = document.getElementById("content");
+    for(var each = content.firstChild; each; each = each.nextSibling) {
+        if(each.nodeType === Node.ELEMENT_NODE) {
+            if(each.className === "")
+                each.oldScrollY = (window.scrollY !== undefined)? window.scrollY: document.body.scrollTop;
+            each.className = (each === panel)? "": "hidden";
+        }
+    }
+    
+    // If the panel contains a text input, give focus to the first one found
+    if(!Array.prototype.some.call(panel.getElementsByTagName("INPUT"), function(input, i, array) {
+        if(input.type === "text") {
+            input.focus();
+            input.select();
+            window.scroll(window.scrollX, 0);
+            return true;
+        }
+    }) && (panel.oldScrollY !== undefined))
+        window.scroll(window.scrollX, panel.oldScrollY);
+}
+
+/*
+ * React to a folder hider click.
+ */
+function onFolderClick(img)
+{
+    // Toggle the hidden state of the UL tag following the image
+    var ul = img.parentNode.getElementsByTagName("UL")[0];
+    if(ul.className === "") {
+        ul.className = "hidden";
+        img.src = images["image-plus"];
+    } else {
+        ul.className = "";
+        img.src = images["image-minus"];
+    }
+}
+
+/*
+ * Filter a list so that only items containing the input text are shown.
+ */
+function filterList(input)
+{
+    if(input.timerId) {
+        clearTimeout(input.timerId);
+        input.timerId = undefined;
+    }
+    var value = input.value.toLowerCase();
+    
+    // Hide items that don't contain the value
+    Array.prototype.forEach.call(input.parentNode.parentNode.getElementsByTagName("LI"), function(item, i, array) {
+        item.className = (item.textContent.toLowerCase().indexOf(value) >= 0)? "": "hidden";
+    });
+}
+
+/*
+ * Get n-th previous or next visible sibling element node in a list.
+ */
+function getListSibling(element, n)
+{
+    var result = element;
+    if(n < 0) {
+        // When moving up, return null if no previous sibling exists
+        while(true) {
+            result = result.previousSibling;
+            if(!result)
+                break;
+            if((result.nodeType == Node.ELEMENT_NODE) && (result.className !== "hidden")) {
+                if(++n == 0)
+                    break;
+            }
+        }
+    } else if(n > 0) {
+        // When moving down, return the last sibling if no next sibling exists
+        var it = element;
+        while(true) {
+            it = it.nextSibling;
+            if(!it)
+                break;
+            if((it.nodeType == Node.ELEMENT_NODE) && (it.className !== "hidden")) {
+                result = it;
+                if(--n == 0)
+                    break;
+            }
+        }
+    }
+    return result;
+}
+
+/*
+ * React to changes in an incremental filter input.
+ */
+function onIncrementalFilter(event, input)
+{
+    // Handle special keys
+    if((event.keyCode == 40) || (event.keyCode == 13) || (event.keyCode == 9)) {    
+                                            // Down, Enter, Tab - Exit input field
+        filterList(input);
+        var li = input.parentNode.parentNode.getElementsByTagName("LI")[0];
+        if(li.className === "hidden")
+            li = getListSibling(li, 1);
+        if(li.className !== "hidden") {
+            var item = li.getElementsByTagName("A")[0];
+            item.focus();
+            window.scroll(window.scrollX, item.offsetTop - item.clientHeight / 2 - window.innerHeight / 2);
+        }
+        event.preventDefault();
+        return;
+    } else if(event.keyCode == 34) {        // PgDown - Exit input field and skip first page
+        filterList(input);
+        var li = input.parentNode.parentNode.getElementsByTagName("LI")[0];
+        li = getListSibling(li, 19);
+        if(li.className !== "hidden") {
+            var item = li.getElementsByTagName("A")[0];
+            item.focus();
+            window.scroll(window.scrollX, item.offsetTop - item.clientHeight / 2 - window.innerHeight / 2);
+        }
+        event.preventDefault();
+        return;
+    } else if(event.keyCode == 27) {        // Esc - Select all text
+        input.select();
+        event.preventDefault();
+        return;
+    }
+    
+    // Schedule list filtering after a small delay
+    if(input.timerId)
+        clearTimeout(input.timerId);
+    input.timerId = setTimeout(function () { input.timerId = undefined; filterList(input); }, 200);
+}
+
+/*
+ * Clear the incremental search field on submit.
+ */
+function onIncrementalSubmit(form)
+{
+    var input = form.getElementsByTagName("INPUT")[0];
+    input.value = "";
+    filterList(input);
+    input.focus();
+    return false;
+}
+
+/*
+ * React to a keypress in a list panel.
+ */
+function onListKeyPress(event, a)
+{
+    var item = null;
+    if(event.keyCode == 38) {           // Up
+        item = getListSibling(a.parentNode, -1);
+        if(item)
+            item = item.getElementsByTagName("A")[0];
+        else
+            item = a.parentNode.parentNode.parentNode.getElementsByTagName("INPUT")[0];
+    } else if(event.keyCode == 40) {    // Down
+        item = getListSibling(a.parentNode, 1).getElementsByTagName("A")[0];
+    } else if(event.keyCode == 33) {    // PgUp
+        item = getListSibling(a.parentNode, -20);
+        if(item)
+            item = item.getElementsByTagName("A")[0];
+        else
+            item = a.parentNode.parentNode.parentNode.getElementsByTagName("INPUT")[0];
+    } else if(event.keyCode == 34) {    // PgDown
+        item = getListSibling(a.parentNode, 20).getElementsByTagName("A")[0];
+    } else if(event.keyCode == 27) {    // Esc
+        item = a.parentNode.parentNode.parentNode.getElementsByTagName("INPUT")[0];
+        item.select();
+    }
+    if(item) {
+        item.focus();
+        window.scroll(window.scrollX, item.offsetTop - item.clientHeight / 2 - window.innerHeight / 2);
+        event.preventDefault();
+    }
+}
+
+/*
+ * Submit a search form.
+ */
+function submitSearchForm(form)
+{
+    if(!whitespaceOnly.test(form.getElementsByTagName("INPUT")[0].value))
+        form.submit();
+    return false;
+}
+
+/*
+ * Start a search for a PEP.
+ */
+function searchPep(form)
+{
+    // If the search term is a number, find this specific PEP. Otherwise, search within PEPs.
+    var term = form.getElementsByTagName("INPUT")[0].value;
+    if(whitespaceOnly.test(term))
+        return false;
+    var num = /^\s*([0-9]{1,4})\s*$/.exec(term);
+    if(num !== null) {
+        window.open("http://www.python.org/dev/peps/pep-" + ("0000" + num[1]).slice(-4) + "/", "_blank")
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/*
+ * Start a search for an issue.
+ */
+function searchIssue(form)
+{
+    // If the search term is a number, find this specific bug. Otherwise, search within bugs.
+    var term = form.getElementsByTagName("INPUT")[0].value;
+    if(whitespaceOnly.test(term))
+        return false;
+    var num = /^\s*([0-9]+)\s*$/.exec(term);
+    if(num !== null) {
+        window.open("http://bugs.python.org/issue" + num[1], "_blank")
+        return false;
+    } else {
+        return true;
+    }
+}
+// ]]></script></head><body onload="onLoad('Tut');"><div id="menu"><ul class="items"><li id="menu-Search" onclick="onMenuClick(this);"><img src="" alt="image-search"/></li></ul><p class="version"><a href="http://docs.python.org/release/1.4/">unknown</a></p></div><div id="content"><div id="panel-Search" class="hidden"><p class="search-heading"><a href="http://www.python.org/">Website</a></p><form class="search-form" method="get" action="http://www.google.com/search" target="_blank" onsubmit="return submitSearchForm(this);"><input name="q" value="" type="text" size="25" class="search-field"/><input name="submit" type="image" class="search-button" alt="image-search"/><label class="search-radio"><input name="q" value="site:docs.python.org/release/1.4/" type="radio" checked="checked"/>Documentation (unknown)</label><label class="search-radio"><input name="q" value="site:python.org" type="radio"/>python.org</label><label class="search-radio"><input name="q" value="site:www.python.org" type="radio"/>www.python.org</label><label class="search-radio"><input name="q" value="site:ftp.python.org" type="radio"/>ftp.python.org</label><label class="search-radio"><input name="q" value="site:mail.python.org" type="radio"/>python.org mailing lists</label></form><p class="search-heading"><a href="http://www.python.org/dev/peps/">PEPs</a></p><form class="search-form" method="get" action="http://www.google.com/search" target="_blank" onsubmit="return searchPep(this);"><input name="q" value="" type="text" size="25" class="search-field"/><input name="submit" type="image" class="search-button" alt="image-search"/><input name="q" value="site:www.python.org/dev/peps" type="hidden"/></form><p class="search-heading"><a href="http://groups.google.com/groups/dir?q=comp.lang.python">Newsgroups</a></p><form class="search-form" method="get" action="http://groups.google.com/group/comp.lang.python/search" target="_blank" onsubmit="return submitSearchForm(this);"><input name="q" value="" type="text" size="25" class="search-field"/><input name="submit" type="image" class="search-button" alt="image-search"/><input name="qt_g" value="1" type="hidden"/></form><a href="http://groups.google.com/advanced_search">Advanced search</a><p class="search-heading"><a href="http://pypi.python.org/pypi">Package index</a></p><form class="search-form" method="get" action="http://pypi.python.org/pypi" target="_blank" onsubmit="return submitSearchForm(this);"><input name="term" value="" type="text" size="25" class="search-field"/><input name="submit" type="image" class="search-button" alt="image-search"/><input name=":action" value="search" type="hidden"/></form><a href="http://pypi.python.org/pypi?%3Aaction=browse">Browse the tree of packages</a><p class="search-heading"><a href="http://bugs.python.org/">Issue tracker</a></p><form class="search-form" method="get" action="http://bugs.python.org/issue" target="_blank" onsubmit="return searchIssue(this);"><input name="@search_text" value="" type="text" size="25" class="search-field"/><input name="submit" type="image" class="search-button" alt="image-search"/><input name="@columns" value="id,activity,title,creator,assignee,status" type="hidden"/><input name="@sort" value="-activity" type="hidden"/><input name="@group" value="priority" type="hidden"/><input name="@filter" value="status" type="hidden"/><label class="search-radio"><input name="status" value="-1,1,3" type="radio" checked="checked"/>Open issues</label><label class="search-radio"><input name="status" value="" type="radio"/>All issues</label></form></div><div id="measure"><form class="search-form" action="#"><input id="search-input" name="q" value="" type="text" size="25" class="search-field"/></form><ul class="tree"><li><a id="text-sample" href="#">A</a></li></ul><img id="image-clear" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gFHxYlNCPPB8sAAADNSURBVBjTlZAhjsNADEWfo5LKwYHLBoVMzzHYxaU9Ue6wwTlEUYcsCgtc3FGkkixxolRVwT5iWfr+/rbgDMNwLKWcgStwAu5Ap6rfKaUZQAD6vv9aluUHqHnnISKtmU3ijr8fhNuAqjaVr64BzIwQAgAhBMxsFdellPPBMwKQcybGCECMkZzz3v168GMAGMfxRbj2zqnyq7fVqzDGuEVy7hXQrd3ecR/J6f73jZTSLCIt8PgkFJE2pTRX/rJJVRvgAtyAp9eLqjZmNgH8AYzzV1bUz4fPAAAAAElFTkSuQmCC" alt=""/><img id="image-plus" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALAgMAAADUwp+1AAAAAXNSR0IArs4c6QAAAAlQTFRFDQgQzMzMAAAAsEMDRwAAAAF0Uk5TAEDm2GYAAAAdSURBVAjXYwgNDWFwYGBhcFBAYK9VLSh8kDxQHQCNDAZVNngBsgAAAABJRU5ErkJggg==" alt=""/><img id="image-search" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALBAMAAABbgmoVAAAAAXNSR0IArs4c6QAAABtQTFRFAAAANUtgPHmfRJC9VqjRl83qut312ez9////Txj6vgAAAAF0Uk5TAEDm2GYAAABBSURBVAjXY2BgYBY2YAACkRBnIMns4ZoC5DK2poSAqLYwVwEgFZEKEhQULXMEckwEBYEcYWUBkC4hQxDJIAjmAABliggWzqNi6wAAAABJRU5ErkJggg==" alt=""/><img id="image-minus" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALAgMAAADUwp+1AAAAAXNSR0IArs4c6QAAAAlQTFRFFggQzMzMAAAAntbf6wAAAAF0Uk5TAEDm2GYAAAAYSURBVAjXYwgNDWFwYGBBwV6rWjDEgOoAfIwFlRR7zLgAAAAASUVORK5CYII=" alt=""/></div></div></body></html>

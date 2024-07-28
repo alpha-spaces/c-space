@@ -1,0 +1,679 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml-stylesheet type="text/css" href="#style"?>
+<!--
+Subversion commit reporter
+Copyright (C) 2007 Remy Blank
+
+This file is part of SvnReporter.
+
+This program is free software; you can redistribute it and/or modify it 
+under the terms of the GNU General Public License as published by the 
+Free Software Foundation, version 2. A copy of the license is provided 
+in the file COPYING.
+
+This program is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+Public License for more details.
+-->
+<!-- TODO: Add requirements for installation (Python 2.4, Subversion Python
+    bindings, a Subversion repository) -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="author" content="Remy Blank"/>
+    <meta name="description" content="Subversion commit reporter"/>
+    <meta name="keywords" content="Subversion, SVN, commit, post-commit, hook, e-mail, feed, atom, rss"/>
+    <title>SvnReporter</title>
+    <style id="style" type="text/css">
+div.title {
+    text-align: center;
+    margin-bottom: 3em;
+}
+ul.toc {
+    padding: 0;
+    list-style-type: none;
+    word-spacing: -1em;
+}
+ul.toc > li {
+    display: inline;
+    padding: 0 1em;
+    border-left: thin solid;
+    word-spacing: normal;
+}
+ul.toc > li:first-child {
+    border-left: none;
+}
+div.metadata table th {
+    text-align: right;
+    padding-right: 0.5em;
+}
+div.metadata table td {
+    text-align: left;
+}
+h2, h3, h4, h5, h6 {
+	margin-top: 2em;
+}
+pre.code, pre.input, pre.output {
+    white-space: pre;
+    margin-left: 2em;
+}
+code, kbd, samp, var, .code, .input, .output {
+    font-family: monospace;
+    font-style: normal;
+    white-space: nowrap;
+}
+div.example p:first-child:before {
+    content: "Example: ";
+    font-weight: bold;
+}
+ul + div.example, ol + div.example, dl + div.example {
+	margin-top: 2em;
+}
+div.example {
+    margin-bottom: 2em;
+}
+dl.options {
+    margin-left: 3em;
+    margin-bottom: 3em;
+}
+dl.options > dt {
+    font-weight: bold;
+    white-space: nowrap;
+}
+dl.options > dd {
+    margin-bottom: 1.5em;
+}
+dl.attributes > dt {
+    font-weight: bold;
+    white-space: nowrap;
+}
+dl.attributes > dd {
+    margin-bottom: 0.5em;
+}
+table.defList {
+	margin-left: 2em;
+	border-collapse: collapse;
+}
+table.defList th {
+	text-align: left;
+}
+table.defList td {
+    padding: 0.2em 1.5em;
+}
+ul, ol, dl {
+	margin-left: 2em;
+}
+hr {
+    margin-top: 3em;
+}
+    </style>
+</head>
+
+<body>
+<div class="title">
+    <h1>SvnReporter: a Subversion commit reporter</h1>
+    <ul class="toc">
+        <li><a href="#sectDescription">Description</a></li>
+        <li><a href="#sectInstallation">Installation</a></li>
+        <li><a href="#sectUsage">Usage</a></li>
+        <li><a href="#sectConfiguration">Configuration</a></li>
+        <li><a href="#sectGenerators">Generators</a></li>
+        <li><a href="#sectTemplates">Templates</a></li>
+        <li><a href="#sectFaq">FAQ</a></li>
+        <li><a href="#sectToDo">To do</a></li>
+        <li><a href="#sectFeedback">Feedback</a></li>
+        <li><a href="#sectLinks">Links</a></li>
+    </ul>
+</div>
+
+<div class="metadata">
+    <table>
+        <tr><th>Project:</th><td>SvnReporter</td></tr>
+        <tr><th>Version:</th><td>0.4 (2005.12.03)</td></tr>
+        <tr><th>Author:</th><td><a href="#" onmouseover="this.href='mai' + 'lto:' + 'sof' + 'tware@c-s' + 'pace.' + 'org'">Remy Blank</a></td></tr>
+        <tr><th>License:</th><td><a href="http://www.gnu.org/licenses/gpl-2.0.html">GPLv2</a></td></tr>
+        <tr><th>URL:</th><td><a href="http://c-space.org/software/SvnReporter.html">http://c-space.org/software/SvnReporter.html</a></td></tr>
+        <tr><th>Download:</th><td><a href="http://c-space.org/download/SvnReporter/SvnReporter-0.4.tar.gz">http://c-space.org/download/SvnReporter/SvnReporter-0.4.tar.gz</a></td></tr>
+    </table>
+</div>
+
+
+<h2><a name="sectDescription">Description</a></h2>
+<p>SvnReporter generates various reports in response to commits happening
+   in a Subversion repository. It is intended to be called from the 
+   post-commit hook.</p>
+
+<p>Two types of reports are supported: single-commit and commit list reports.
+   The former generate reports relative to a specific revision only, and are 
+   typically used to generate post-commit mails. The latter generate reports
+   relative to a list of commits, e.g. an RSS feed or a web page showing the 
+   latest commits.</p>
+
+<p>Reports can be restricted to commits whose objects match certain criteria,
+   specified by a list of regular expressions. The format of the reports can 
+   be defined freely and flexibly using a very simple template format. A few 
+   example templates are included in the distribution.</p>
+
+
+<h2><a name="sectInstallation">Installation</a></h2>
+<p>SvnReporter is released under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">
+   GNU General Public License, version 2</a></p>
+<p>The latest version can be downloaded 
+   <a href="http://c-space.org/download/SvnReporter/">here</a>. It has been tested 
+   on Linux, but AFAIK there's not reason why it shouldn't run on other platforms.</p>
+<p>SvnReporter requires at least <a href="http://www.python.org">Python&nbsp;2.4</a>, and
+   provides an installer based on <code>distutils</code>. This means that installation
+   to the default location (<code>/usr</code>) is as simple as:</p>
+<pre class="input">
+python setup.py install
+</pre>
+<p>To install SvnReporter to another location, e.g. <code>/usr/local</code>, enter:</p>
+<pre class="input">
+python setup.py install --prefix=/usr/local
+</pre>
+
+<p>The folder <code>doc/examples</code> contains a sample configuration file with 
+   its associated Python module and three templates.</p>
+<table class="defList">
+    <tr>
+        <th><code>SvnReporter.ini</code></th>
+        <td>Configuration file</td>
+    </tr>
+    <tr>
+        <th><code>Imports.py</code></th>
+        <td>Function importer module</td>
+    </tr>
+    <tr>
+        <th><code>mail.txt</code></th>
+        <td><code>multipart/alternative</code> e-mail template</td>
+    </tr>
+    <tr>
+        <th><code>atom.xml</code></th>
+        <td>Atom feed template</td>
+    </tr>
+    <tr>
+        <th><code>rss.xml</code></th>
+        <td>RSS feed template</td>
+    </tr>
+</table>
+
+
+<h2><a name="sectUsage">Usage</a></h2>
+<p>Basic usage information can be displayed with <kbd>SvnReporter --help</kbd>:</p>
+<pre class="output">
+$ python SvnReporter --help
+usage: SvnReporter.py [options] config repos_path [revision]
+
+SvnReporter generates various reports in response to commits happening in a
+Subversion repository. It is intended to be called from the  post-commit hook.
+
+options:
+  --version   show program's version number and exit
+  -h, --help  show this help message and exit
+</pre>
+
+<p>The command line arguments are as follows:</p>
+<table class="defList">
+    <tr>
+        <th><var>config</var></th>
+        <td>Path to the configuration file</td>
+    </tr>
+    <tr>
+        <th><var>repos_path</var></th>
+        <td>Path to the Subversion repository</td>
+    </tr>
+    <tr>
+        <th><var>revision</var></th>
+        <td>Revision for which reports must be generated, or youngest revision
+            if missing</td>
+    </tr>
+</table>
+
+<p>SvnReporter is meant to be called from a post-commit hook, which gets both
+   <var>repos_path</var> and <var>revision</var> as command-line arguments.
+   A typical post-commit hook on a *nix system could look as follows (it assumes 
+   that the configuration file is located in a <code>SvnReporter</code> sub-folder 
+   of the hooks folder):</p>
+<pre class="code">
+#!/bin/sh
+REPOS="$1"
+REV="$2"
+cd "${REPOS}/hooks/SvnReporter"
+SvnReporter SvnReporter.conf "${REPOS}" "${REV}"    
+</pre>
+
+<h2><a name="sectConfiguration">Configuration file format</a></h2>
+<p>The configuration file defines an arbitrary number of sections, each specifying
+   the reports to generate for commits matching certain conditions. A section starts
+   with a name between square brackets (e.g. <var>[mySection]</var>) followed by
+   any number of key&nbsp;/&nbsp;value pairs (variable definitions) separated by an equal 
+   sign or a colon (e.g. <code>entries=10</code> or <code>entries: 10</code>). Values 
+   can span multiple lines, where the following lines must be indented by whitespace. 
+   A complete description of the configuration file structure can be found in the
+   <a href="http://www.python.org/doc/current/lib/module-ConfigParser.html">ConfigParser</a>
+   documentation.</p>
+   
+<p>Every section should define at least the following special variables, either 
+   directly or as default values through the <var>[DEFAULT]</var> section:</p>
+<dl class="options">
+    <dt><a name="exclude"><var>exclude</var></a></dt>
+    <dd>
+        <p>Defines an optional list of regular expressions to exclude commit objects. Every 
+           regular expression must be on a separate line. For a section to match, at least 
+           one of the commit objects must match one of the <var>match</var> regular 
+           expressions and not match any of the <var>exclude</var> regular expressions.
+           Only commits matching the section are processed by the generators.</p>
+        <div class="example">
+            <p>Excluding temporary files</p>
+<pre class="code">
+exclude = .*\.tmp
+</pre>
+        </div>
+    </dd>
+    <dt><a name="generators"><var>generators</var></a></dt>
+    <dd>
+        <p>Defines a list of report generators for the section. Every generator will create
+           one report. Each generator gets its parameters enclosed in parentheses after the
+           generator name. The generators are separated by commas. (Actually, the whole
+           expression is placed between square brackets <code>[]</code> and evaluated as
+           a Python expression.)</p>
+        <div class="example">
+            <p>One mail and one RSS feed generator</p>
+<pre class="code">
+generators = 
+    Mail("mail.txt", "host.domain", "svn@host.domain", "joe@nospam.com"),
+    Feed("rss.xml", "/var/www/htdocs/svn.rss", 10, 30, 200),
+</pre>
+        </div>
+    </dd>
+    <dt><a name="match"><var>match</var></a></dt>
+    <dd>
+        <p>Defines a list of regular expressions to match commit objects. Every regular
+           expression must be on a separate line. For a section to match, at least one 
+           of the commit objects must match one of the <var>match</var> regular expressions
+           and not match any of the <var>exclude</var> regular expressions.
+           Only commits matching the section are processed by the generators.</p>
+        <div class="example">
+            <p>Match everything below <code>Projects/MyProject/</code> and 
+               <code>Libraries/MyLib/</code></p>
+<pre class="code">
+match =
+    Projects/MyProject/.*
+    Libraries/MyLib/.*
+</pre>
+        </div>
+    </dd>
+    <dt><a name="module"><var>module</var></a></dt>
+    <dd>
+        <p>Defines an optional Python module to import for expression name resolution.
+           This allows importing and/or adding new functions to be used in 
+           <a href="#sectStringSubst">string substitution expressions</a>. Every section 
+           gets its own copy of the module.</p>
+        <div class="example">
+            <p>Import module <code>Import.py</code> into locals</p>
+<pre class="code">
+module = Import.py
+</pre>
+        </div>
+    </dd>
+</dl>
+
+<p>Moreover, the <var>[DEFAULT]</var> section can define the following variable:</p>
+<dl class="options">
+    <dt><var>cache</var></dt>
+    <dd>
+        <p>Defines a location where SvnReporter will store cached data extracted from
+           Subversion to persist across runs, so that it doesn't have to access
+           the repository for data accessed in a previous run. If this variable is not
+           specified, caching will still be done on a per-run basis, but will not
+           be persisted across runs.</p>
+        <div class="example">
+            <p>Store cache in <code>/var/cache/SvnReporter/cache.pickle</code></p>
+            <pre class="code">cache = /var/cache/SvnReporter/cache.pickle</pre>
+        </div>
+    </dd>
+</dl>
+
+<div class="example">
+    <p>A sample configuration file (a commented version is included in 
+       <code>doc/examples</code>)</p>
+<pre class="code">
+[DEFAULT]
+host = server.mydomain.com
+path = rc-feeds/%(__name__)s
+viewVcBase = http://%(host)s/rc
+viewVcRoot = svn
+
+cache = cache.pickle
+module = Imports.py
+generators =
+        Mail("mail.txt", %(repr(host))s, %(repr(mailFrom))s, %(repr(mailTo))s),
+        Feed("rss.xml", "/var/www/localhost/htdocs/%(path)s.rss", %(entries)s, %(maxDays)s, %(maxDepth)s),
+mailFrom = svn@%(host)s
+entries = 10
+maxDays = None
+maxDepth = None
+
+feedTitle = Commits on %(__name__)s
+feedLink = http://%(host)s/%(path)s
+entryTitle = Revision %(revision.number)d
+entryLink = %(viewVcBase)s?root=%(quote_plus(viewVcRoot))s&amp;rev=%(revision.number)d&amp;view=rev
+
+revLink = %(viewVcRevisionLink(viewVcBase, revision.number, viewVcRoot))s
+objectLink = %(viewVcObjectLink(viewVcBase, revision.number, change, viewVcRoot))s
+diffLink = %(viewVcDiffLink(viewVcBase, revision.number, change, "(diff to previous)", viewVcRoot))s
+
+[All]
+feedTitle = All commits except private
+match = .*
+exclude = private/.*
+mailTo =
+        admin@mydomain.com
+        manager@mydomain.com
+
+[SvnReporter]
+match = dev/SvnReporter/.*
+mailTo =
+        user2@mydomain.com
+        client@mydomain.com
+</pre>
+</div>
+
+<h2><a name="sectGenerators">Generators</a></h2>
+
+<p>Generators use a <a href="#sectTemplates">template</a> to process data coming 
+   from Subversion, generate an output report, and send it somewhere. There
+   are currently two types of generators:</p>
+<ul>
+    <li>Single-commit: generate a report from a single commit.</li>
+    <li>Commit list: generate a report from a list of commits.</li>
+</ul>
+
+
+<h3><a name="sectMail"><var>Mail</var> generator</a></h3>
+
+<p>The <var>Mail</var> generator is a single-commit generator that sends its
+   output to an SMTP server. The template is expected to generate an 
+   <a href="http://www.ietf.org/rfc/rfc2822">RFC 2822-compliant</a> message.</p>
+
+<p>The constructor signature is the following:</p>
+<pre class="code">Mail(template, mailer, mailFrom, recipients)</pre>
+<p>Where:</p>
+<table class="defList">
+    <tr>
+        <th><var>template</var></th>
+        <td>Path to the template file</td>
+    </tr>
+    <tr>
+        <th><var>mailer</var></th>
+        <td>Host name or IP address of the SMTP server</td>
+    </tr>
+    <tr>
+        <th><var>mailFrom</var></th>
+        <td>Address of the sender of the message, will be used in the 
+        <code>MAIL FROM</code> command to the SMTP server</td>
+    </tr>
+    <tr>
+        <th><var>recipients</var></th>
+        <td>List of recipients, separated by newlines</td>
+    </tr>
+</table>
+
+<p><var>Mail</var> generators with identical parameters (same <var>template</var>, 
+   <var>mailer</var> and <var>mailFrom</var>) for different sections combine their 
+   recipient lists. This prevents receiving a commit mail more than once if a commit 
+   matches several sections and a particular recipient is specified in more than one 
+   of the matching sections.</p>
+   
+<p><var>Mail</var> generators provice an additional variable <var>__names__</var>,
+   a Python list containing the names of the sections for which a mail is generated.</p>
+
+
+<h3><a name="sectFeed"><var>Feed</var> generator</a></h3>
+
+<p>The <var>Feed</var> generator is a generic commit list generator that writes 
+   its output to a file. The format of the template is completely free. This allows
+   generating a wide variety of reports: Atom feeds, RSS feeds, commit summary 
+   web pages, text files, etc.</p>
+
+<p>The constructor signature is the following:</p>
+<pre class="code">Feed(template, destination, entries=None, maxDays=None, maxDepth=None)</pre>
+<p>Where:</p>
+<table class="defList">
+    <tr>
+        <th><var>template</var></th>
+        <td>Path to the template file</td>
+    </tr>
+    <tr>
+        <th><var>destination</var></th>
+        <td>Path to the output file</td>
+    </tr>
+    <tr>
+        <th><var>entries</var></th>
+        <td>Maximum number of entries in the generated report</td>
+    </tr>
+    <tr>
+        <th><var>maxDays</var></th>
+        <td>Stop iteration over the <var>revision</var> loop if revisions become
+            older than <var>maxDays</var> days</td>
+    </tr>
+    <tr>
+        <th><var>maxDepth</var></th>
+        <td>Stop iteration over the <var>revision</var> loop at revision
+            <code>(youngest - maxDepth)</code>.</td>
+    </tr>
+</table>
+
+
+<h2><a name="sectTemplates">Template file format</a></h2>
+
+<p>Every generator takes a template file name as its first argument. The template 
+   describes what must be generated. Two mechanisms allow customizing what is 
+   generated: <a href="#sectStringSubst">string substitutions</a> and 
+   <a href="#sectForeach"><var>foreach</var> loops</a>. Everything else is taken 
+   as-is into the output file.</p>
+
+
+<h3><a name="sectStringSubst">String substitutions</a></h3>
+
+<p>The string substitution mechanism is based on 
+   <a href="http://www.python.org/doc/current/lib/typesseq-strings.html" >Python's 
+   string formatting operator <var>%</var></a> using mapping keys, but extends it 
+   to allow any Python expression as the mapping key. The identifiers used in the 
+   expression are looked up in the following order:</p>
+<ol>
+    <li>The content <code>struct</code>s provided by Subversion data 
+        (<var>repository</var>, <var>revision</var>, <var>change</var>), and 
+        <a href="#sectForeach"><code>foreach</code></a> loop counters</li>
+    <li>The section of the configuration file for which content is being generated</li>
+    <li>The <var>[DEFAULT]</var> section in the configuration file</li>
+    <li>The module imported with the <a href="#module"><var>module</var></a> 
+        variable in the current section</li>
+</ol>
+<p>The variable <var>__name__</var> always contains the name of the current 
+   configuration file section, i.e. the section for which output is currently being 
+   generated.</p>
+
+<div class="example">
+    <p>Substitute the value of the name <var>myVar</var> defined in the configuration
+       file</p>
+    <pre class="code">%(myVar)s</pre>
+</div>
+<div class="example">
+    <p>Substitute the current revision number minus one</p>
+    <pre class="code">%(revision.number - 1)d</pre>
+</div>
+<div class="example">
+    <p>Substitute the escaped content of <var>htmlContent</var> (<code>escape</code> 
+       must have been imported from <code>xml.sax.saxutils</code>)</p>
+    <pre class="code">%(escape(htmlContent))s</pre>
+</div>
+<div class="example">
+    <p>Substitute a star (<code>*</code>) if the content of an object has changed,
+       and nothing if not</p>
+    <pre class="code">%({False: "", True: "*"}[change.textChanged])s</pre>
+</div>
+
+
+<h3><a name="sectForeach"><var>foreach</var> loops</a></h3>
+
+<p>Every generator defines a certain number of loops related to lists of data 
+   coming from Subversion. A <code>foreach</code> loop defines a portion of 
+   the template that will be repeated once for every item in the list, and 
+   inserted at the location where the loop is defined. A <var>foreach</var>
+   loop starts with <code>&lt;?foreach name?></code> and ends with 
+   <code>&lt;?end name?></code>, where "<var>name</var>" is the name of the
+   loop.</p>
+<p>Loops can be nested, and can appear more than once in a template. However,
+   some nestings are rigidly defined. For example, a "<var>change</var>" loop
+   of a <var>Feed</var> template must be contained within a <var>revision</var>
+   loop, as every revision defines a new list of changes.</p>
+
+<p>Every loop defines a struct variable with the same name as the loop, and 
+   containing data for the current loop item. The data can be accessed by 
+   specifying the loop variable name and the attribute separated by a period
+   (<code>.</code>). Moreover, the loop defines a loop counter whose name
+   is <var>{name}Count</var> (e.g. <var>revisionCount</var> or 
+   <var>changeCount</var>). The following variables are available:</p>
+<dl class="options">
+    <dt><var>repository</var></dt>
+    <dd>
+        <p>This variable is always available, and provides data about the 
+           Subversion repository.</p>
+        <dl class="attributes">
+            <dt><var>uuid [str]</var></dt>
+            <dd>UUID of the repository</dd>
+            <dt><var>youngest [int]</var></dt>
+            <dd>Latest revision number</dd>
+        </dl>
+    </dd>
+    <dt><var>revision</var></dt>
+    <dd>
+        <p>This variable is always available for single-commit generators, and
+           in <var>revision</var> loops for commit list generators. It provides 
+           data about a revision. The generators loop over revisions 
+            <em>in reverse order</em>, i.e. from youngest to oldest revision.</p>
+        <dl class="attributes">
+            <dt><var>number [int]</var></dt>
+            <dd>Number of the revision</dd>
+            <dt><var>author [str]</var></dt>
+            <dd>Commit author of the revision</dd>
+            <dt><var>date [str]</var></dt>
+            <dd>Date when the revision was committed</dd>
+            <dt><var>log [str]</var></dt>
+            <dd>Log message of the revision</dd>
+        </dl>
+    </dd>
+    <dt><var>change</var></dt>
+    <dd>
+        <p>This variable is available in <var>change</var> loops, and provides 
+            data about individual changes in a revision. The generators loop 
+            over changes in alphabetical order of <var>path</var>.</p>
+        <dl class="attributes">
+            <dt><var>path [str]</var></dt>
+            <dd>Path of the changed object</dd>
+            <dt><var>action [str]</var></dt>
+            <dd>Action performed, an be one of "added", "copied", "deleted" or "modified"</dd>
+            <dt><var>propChanged [bool]</var></dt>
+            <dd><code>True</code> iff properties of the object have changed</dd>
+            <dt><var>textChanged [bool]</var></dt>
+            <dd><code>True</code> iff the content of the object has changed</dd>
+            <dt><var>changedStr [str]</var></dt>
+            <dd>String showing a summary of the change types, similar to what is shown by
+                <kbd>svn status</kbd></dd>
+            <dt><var>basePath [str]</var></dt>
+            <dd>Path to the source if the object was copied</dd>
+            <dt><var>baseRevision [int]</var></dt>
+            <dd>Revision number of the source if the object was copied</dd>
+        </dl>
+    </dd>
+</dl>
+ 
+<div class="example">
+    <p>Generate a list of all commit object paths, each on a separate line</p>
+<pre class="code">
+The following objects have changed:
+&lt;?foreach change?>  %(change.path)s
+&lt;?end change?>
+</pre>
+    <p>This template might generate the following output:</p>
+<pre class="output">
+The following objects have changed:
+  Project/file1.c
+  Project/file2.c
+  Project/ChangelLog
+</pre>
+</div>
+
+<div class="example">
+    <p>Generate a list of revisions with the paths that have been changed, 
+        prefixed with the change action (added, copied, deleted, modified)</p>
+<pre class="code">
+Latest revisions:
+-----------------
+&lt;?foreach revision?>Revision %(revision.number)d
+&lt;?foreach change?>  %(change.action)8s  %(change.path)s
+&lt;?end change?>
+&lt;?end revision?>
+</pre>
+    <p>This template might generate the following output:</p>
+<pre class="output">
+Latest revisions:
+-----------------
+Revision 72
+  modified  Project/file1.c
+  added     Project/file2.c
+  
+Revision 71
+  copied    Project/file1.c
+  deleted   Project/oldfile.c
+</pre>
+</div>
+
+
+<h2><a name="sectFaq">Frequently asked questions</a></h2>
+
+<ul>
+    <li>None so far...</li>
+</ul>
+
+
+<h2><a name="sectToDo">To do</a></h2>
+
+    <p>The following features will be added to SvnReporter as time permits.</p>
+<ul>
+    <li><var>News</var> generator for sending post-commit news.</li>
+    <li>Anything else?</li>
+</ul>
+
+
+<h2><a name="sectFeedback">Feedback</a></h2>
+
+<p>If you are using or trying to use SvnReporter, I would be happy to hear from you!
+   I'm especially interested in the following:</p>
+<ul>
+    <li>Success reports</li>
+    <li>Bug reports (ideally, with a test case and a patch correcting the problem)</li>
+    <li>Functionality improvement suggestions</li>
+    <li>Documentation improvement suggestions</li>
+</ul>
+<p>In any case, just drop me an
+   <a href="#" onmouseover="this.href='mai' + 'lto:' + 'sof' + 'tware@c-s' + 'pace.' + 'org'">e-mail</a>.</p>
+
+
+<h2><a name="sectLinks">Links</a></h2>
+
+<ul>
+        <li>Python: <a href="http://www.python.org/">http://www.python.org/</a></li>
+        <li>Subversion: <a href="http://subversion.tigris.org/">http://subversion.tigris.org/</a></li>
+</ul>
+
+
+<hr/>
+<p class="copyright">Copyright (C) 2007 Remy Blank</p>
+
+</body>
+</html>

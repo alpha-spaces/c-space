@@ -1,0 +1,68 @@
+==================================================================
+https://keybase.io/rblank
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://c-space.org
+  * I am rblank (https://keybase.io/rblank) on keybase.
+  * I have a public key with fingerprint 19C0 9C68 5784 07D7 BD3C  A3E2 09E3 5F23 286F 5E32
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0111102efc353a9458dd2f60d25467ebc93b2100ded964fd4c9ad727e5633dcaf1a70a",
+            "fingerprint": "19c09c68578407d7bd3ca3e209e35f23286f5e32",
+            "host": "keybase.io",
+            "key_id": "09e35f23286f5e32",
+            "kid": "0111102efc353a9458dd2f60d25467ebc93b2100ded964fd4c9ad727e5633dcaf1a70a",
+            "uid": "b45d4f4aad9f92dbc8732c4c9fb43d19",
+            "username": "rblank"
+        },
+        "revoke": {
+            "sig_ids": [
+                "8abeba61939f20cbcf4aa73db84876a0deb0280f8fd8f6d1a58c39ae7d9a19a20f"
+            ]
+        },
+        "service": {
+            "hostname": "c-space.org",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1480106346,
+    "expire_in": 157680000,
+    "prev": "d7a7ccf2643c28be6331a680d1e1a7b76ca5e4a2019e901d78e36c45e1b2c0d2",
+    "seqno": 3,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owGtkr1rFEEYxtf4AQkIBhvriYXFGeZr52NJbZXCTjHqMR/v3C137p67m4vhSKOF
+gk1AsBMV/wERBcG/QGxtLKysrGxEEBvfPWNl6zTDzDzv733mmTk8fTxbWV/9Mty4
+UN/kxz589dlV87xaEF/HfVIsyASWE0wjtN1wUkZSEMpwUA4piFw4K3MTI0+KRp5L
+pcEHKzxnlEaIVskUZbAuaq4hV0LE4BJzmjoyIKmsRtDMmrLqEMtsoDYok2sjqY7a
+RxGcAE4tiDxxwY1KOQiOheO67SvQnHctbJY17uFi+Mfev/r/7Ht3ifMyjzJJ56JN
+lkcfjBY8YFHyUkRme2ELTeVuAaobP3XVhBwMSAPzegJ9qm05QsstKXaIcR68U8wK
+mzgNPvRgLaI30mjl0JOn3NBkUjRJReZyE4R1oKN1zDpOE7mBbOw3L8MS3md01Dtc
+bGcuwGbdjNDUrKm7OtRTPBh33azoPXX7s164By/98Igx9GUV8YGwYg5NW9YVKRhK
+Q1f2UCYNZVQJqQYE7szKBoZlr8i1MhRH3wfmyIza6RASV1IEbjxglsyhJjLAPL1W
+weUg8QbMgqUsagNCBZkD8zzg25D+VrermhQCfboRIjG3ynW7DZCDtQeXTmTrK9mp
+kyv9x83WVs/8/c2fiuype7H9/vP5+c9Hl99uHW5/v77xeOtN9uzhE/rj25Xxu7OL
+j/d37v26++ra63O/AQ==
+=STrT
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/rblank
+
+==================================================================
+

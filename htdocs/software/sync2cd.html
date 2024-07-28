@@ -1,0 +1,517 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml-stylesheet type="text/css" href="#style"?>
+<!--
+User documentation for sync2cd
+Copyright (C) 2007 Remy Blank
+
+This file is part of sync2cd.
+
+This program is free software; you can redistribute it and/or modify it 
+under the terms of the GNU General Public License as published by the 
+Free Software Foundation, version 2. A copy of the license is provided 
+in the file COPYING.
+
+This program is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+Public License for more details.
+-->
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="author" content="Remy Blank"/>
+    <meta name="description" content="sync2cd, an incremental archiving tool"/>
+    <meta name="keywords" content="backup, incremental, archive, CD, DVD, synchronization"/>
+    <title>sync2cd</title>
+    <style id="style" type="text/css">
+dl {
+    margin-left: 4em;
+}
+dt {
+    font-family: monospace;
+    font-weight: bold;
+    white-space: nowrap;
+}
+code {
+    white-space: nowrap;
+}
+    </style>
+</head>
+
+<body>
+<h1 style="text-align: center;">sync2cd: an incremental archiving tool to CD/DVD</h1>
+<p style="text-align: center;">
+    <a href="#description">Description</a> |
+    <a href="#whatsnew">What's new</a> |
+    <a href="#download">Download</a> |
+    <a href="#usage">Usage</a> |
+    <a href="#config_file">Configuration</a> |
+    <a href="#faq">FAQ</a> |
+    <a href="#to_do">To do</a> |
+    <a href="#feedback">Feedback</a> |
+    <a href="#links">Links</a>
+</p>
+<p style="text-align: center;">Current version: 1.3 (2007.04.09)</p>
+
+
+<h2><a name="description">Description</a></h2>
+<p>sync2cd is an incremental archiving tool. It allows backing up complete filesystem
+   hierarchies to multiple backup media (e.g. CD-R). Files are archived incrementally,
+   i.e. only new or changed files are stored during an archive operation.</p>
+<p>All entity types are supported: directories, files, symlinks, named pipes, sockets,
+   block and character devices.</p>
+
+
+<h2><a name="whatsnew">What's new</a></h2>
+<p>This version includes the following improvements:</p>
+<ul>
+    <li>Added the <code>Discarded()</code> configuration function.</li>
+    <li>Added the <code>Compress()</code> configuration function, and compress archive
+        descriptors by default.</li>
+</ul>
+<p>For information about previous versions, see the <code>ChangeLog</code> 
+   file included in the distribution.</p>
+    
+    
+<h2><a name="download">Download</a></h2>
+<p>sync2cd is released under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">
+   GNU General Public License version 2</a>. The current version can be downloaded
+   <a href="http://c-space.org/download/sync2cd/">here</a>.</p>
+<p>sync2cd requires at least <a href="http://www.python.org">Python&nbsp;2.4</a>, and
+   provides an installer based on <code>distutils</code>. This means that installation
+   to the default location (<code>/usr</code>) is as simple as:</p>
+<pre>
+   python setup.py install
+</pre>
+<p>To install sync2cd to a specific location, e.g. <code>/usr/local</code>, enter:</p>
+<pre>
+   python setup.py install --prefix=/usr/local
+</pre>
+<p>sync2cd has been tested with Python&nbsp;2.4.3 on Linux. It might work
+   with other version and platform combinations, but I'm pretty sure a POSIX
+   platform is needed, so if you are trying to run sync2cd on Windows, you will
+   probably need to install <a href="http://www.cygwin.com/">cygwin</a>. If you 
+   were able to run sync2cd with another configuration, please 
+   <a href="#feedback">drop me a line</a> (and, if necessary, send me a patch ;-)</p>
+
+
+<h2><a name="usage">Usage</a></h2>
+<p>Basic usage information is output with <code>sync2cd --help</code>:</p>
+<pre>
+    $ sync2cd --help
+    sync2cd 1.3   Incremental archiving tool to CD/DVD
+    Copyright (C) 2007 Remy Blank
+
+    Usage: sync2cd [commands] [options] config_file
+
+    Commands: -c, --create               Create a new archive descriptor
+              -g, --graft-list           Output a graft list for an archive
+              -h, --help                 Show this text
+              -p, --print                Print archive information
+              -r, --restore              Restore from archives
+              -s, --status               Print current synchronization status
+              -y, --copy                 Copy files of an archive to destination
+
+    Options:  -a N, --archive N          Operate on archive number N
+              -b GLOB, --glob GLOB       Add glob GLOB to pattern list
+              -d DIR, --destination DIR  Copy or restore into directory DIR
+              -m N, --medium-size N      Set archive medium size to N
+              -n CMD, --mounter CMD      Mount media using CMD for restore
+              --sort HOW                 File sorting key (time or alpha)
+              -v, --verbose              Be more verbose
+              -x EXP, --regexp EXP       Add regular expression EXP to pattern list
+</pre>
+
+<h3>Commands</h3>
+<p>Commands define what will be done and what will be output to stdout. Several commands
+   can be specified at the same time, and will be executed in a sensible order (e.g.
+   <code>--create</code> before <code>--graft-list</code>).</p>
+<dl>
+    <dt>-c, --create</dt>
+    <dd>Create a new archive, containing the files from the inputs specified in the 
+        configuration file, up to the capacity of one archive medium. This will create 
+        a new archive descriptor, with the same base name as the configuration file and a 
+        numbered extension, starting at 1 if no descriptor exists yet. If archive 
+        descriptor compression is enabled, a <code>.gz</code> extension is added.
+        <br/><br/></dd>
+
+    <dt>-g, --graft-list</dt>
+    <dd>Output a list of graft-points to stdout, in the format expected by
+       <code>mkisofs</code> with the <code>-graft-points</code> option.<br/><br/></dd>
+
+    <dt>-h, --help</dt>
+    <dd>Show some basic usage information and exits.<br/><br/></dd>
+
+    <dt>-p, --print</dt>
+    <dd>Print information about an archive to stdout. If <code>--verbose</code>
+        is also specified, the list of files contained in the archive is also output.
+        <br/><br/></dd>
+
+    <dt>-r, --restore</dt>
+    <dd>Restore the items matching the patterns specified with <code>--glob</code> and
+        <code>--regexp</code>, or all items if no pattern was specified.<br/><br/></dd>
+
+    <dt>-s, --status</dt>
+    <dd>Print the status for a backup set, i.e. the total size of all files that need
+        to be archived. If <code>--verbose</code> is also specified, the list
+        of files that need to be archived is also output.<br/><br/></dd>
+
+	<dt>-y, --copy</dt>
+	<dd>Copy the files of an archive from their source location to the directory
+        specified by <code>--destination</code>. The folder structure of the source
+        is kept in the destination folder. File attributes (ownership, permissions,
+        times) are not preserved. This command allows e.g. backing up onto a harddrive
+        or a DVD-RAM, or splitting a folder structure into smaller chunks.</dd>
+</dl>
+    
+<h3>Options</h3>
+<p>Options allow passing arguments to the selected commands. If the same option is
+   specified on the command line and in the configuration file, the command line
+   takes precedence.</p>
+<dl>
+    <dt>-a N, --archive N</dt>
+    <dd>Specify that the selected command(s) should be executed on archive <code>N</code>.
+        Note that this option will have no effect with <code>--create</code>
+        and will be overridden by the newly created archive.<br/><br/></dd>
+
+    <dt>-b GLOB, --glob GLOB</dt>
+    <dd>Add the shell pattern GLOB to the list of patterns for items to restore. The pattern
+        format is specified in the <code>Exclude()</code> configuration file function
+        description. If the pattern matches a directory, all items below it will be 
+        matched as well.<br/><br/></dd>
+
+    <dt>-d DIR, --destination DIR</dt>
+    <dd>Specify the destination directory for a copy or restore operation. All files 
+        and directories will be copied or restored below this directory. It must exist 
+        before the operation.<br/><br/></dd>
+
+    <dt>-m, --medium-size</dt>
+    <dd>Set the maximum size of an archive to <code>N</code>. Corresponds to the function
+        <code>MediumSize()</code> in the <a href="#config_file">configuration file</a>.
+        <br/><br/></dd>
+
+    <dt>-n CMD, --mounter CMD</dt>
+    <dd>Specify the command to be executed to mount a backup medium for restoring. It will
+        be called with the path to the archive descriptor as an additional command-line 
+        parameter, and must print the mount point of the backup medium to stdout. 
+        Additionally, it will be called after the restore operation with a "dummy"
+        descriptor with number 0 to allow ejecting the last media. For an example, see the
+        <code>sync2cd_mounter.sh</code> script provided with sync2cd.<br/><br/></dd>
+
+    <dt>--sort HOW</dt>
+    <dd>Specify how files should be selected for inclusion when creating an archive,
+        in the case where not all files would fit. Corresponds to the function
+        <code>Sort()</code> in the <a href="#config_file">configuration file</a>.
+        <br/><br/></dd>
+        
+    <dt>-v, --verbose</dt>
+    <dd>Output more information to stdout for various commands.<br/><br/></dd>
+
+    <dt>-x EXP, --regexp EXP</dt>
+    <dd>Add the regular expression EXP to the list of patterns for items to restore. If 
+        the regular expression matches a directory, all items below it will be matched as 
+        well.<br/><br/></dd>
+</dl>
+
+<h3>Examples</h3>
+<p>Here are a few basic examples:</p>
+<ul>
+    <li><p>Create a new archive and burn a CD-R (that's basically what the script 
+           <code>sync2cd_mkcd.sh</code> included in the distribution executes):</p>
+    <pre>
+    sync2cd -c -g pictures | mkisofs -J -r -graft-points -path-list - -quiet | cdrecord -v -waiti -data -
+    </pre>
+        </li>
+    
+    <li><p>Create a new archive and burn a DVD (that's what the script 
+           <code>sync2cd_mkdvd.sh</code> included in the distribution executes):</p>
+    <pre>
+    sync2cd -c -g pictures | growisofs -Z /dev/dvd -J -r -graft-points -path-list - -quiet
+    </pre>
+    </li>
+    
+	<li><p>Create a new archive and copy the files contained in this archive to
+           the specified destination folder (which could be a DVD-RAM disk):</p>
+    <pre>
+    sync2cd -c -v -y -d /mnt/dvdram pictures
+    </pre>
+    </li>
+
+    <li><p>Check how much data remains to be archived:</p>
+    <pre>
+    sync2cd -s pictures
+    </pre>
+    </li>
+
+    <li><p>Print the contents of archive number <code>2</code>:</p>
+    <pre>
+    sync2cd -p -a 2 -v pictures
+    </pre>
+    </li>
+
+    <li><p>Restore all music files with genre "Rock" and "Pop" to ~/tmp:</p>
+    <pre>
+    sync2cd -r -v -n "sync2cd_mounter.sh /mnt/cdrom" -d ~/tmp -b "Music/Rock/**.mp3" -b "Music/Pop/**.mp3" Music
+    </pre>
+    </li>
+</ul>
+
+
+<h2><a name="config_file">Configuration file format</a></h2>
+<p>The configuration file is actually Python code calling functions defined
+   in sync2cd.py and passing configuration information. The functions available
+   are described below.</p>
+<dl>
+    <dt>BaseDir(path)</dt>
+    <dd>
+    <p>Set the current working directory to <code>path</code> before starting. All paths
+       specified with <code>Input()</code> are relative to this directory. This option
+       corresponds to the <code>-C</code> or <code>--directory</code> option
+       of <code>tar</code>.</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr><td>Default:</td><td><code>.</code> (current directory)</td></tr>
+        <tr><td>Example:</td><td><code>BaseDir("/home")</code></td></tr>
+    </table><br/>
+    </dd>
+    
+    <dt>Compress(arg)</dt>
+    <dd>
+    <p>Specify if archive descriptors should be compressed, and which compressor to use.
+       If <code>arg=False</code>, descriptors will not be compressed. If 
+       <code>arg=True</code>, a default compressor will be selected (currently 
+       <code>bz2</code>). <code>arg</code> can also be the name of the compressor
+       to use (<code>gz</code>, <code>bz2</code>).</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr><td>Default:</td><td><code>bz2</code></td></tr>
+        <tr><td>Example:</td><td><code>Compress("gz")</code></td></tr>
+    </table><br/>
+    </dd>
+
+    <dt>Discarded(archiveNo, ...)</dt>
+    <dd>
+    <p>Mark one or more archives as discarded. Files that were contained in the given
+       archives will be included in the next archive creation operation, as if the 
+       archives had never existed.</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr><td>Default:</td><td>none</td></tr>
+        <tr><td>Example:</td><td><code>Discarded(2, 4, 5)</code></td></tr>
+    </table><br/>
+    </dd>
+    
+    <dt>Exclude(pattern)</dt>
+    <dd>
+    <p>Exclude files matching the shell pattern <code>pattern</code> from the archive.
+       Several exclude patterns can be specified. The pattern matching is done against
+       the path relative to <code>BaseDir()</code>. If a directory matches an exclude
+       pattern, it is not recursed into.</p>
+    <p>As usual with shell patterns, a <code>*</code> wildcard matches zero or more
+       characters <em>except path separators (e.g. "/" on *nix)</em>. A new wildcard,
+       <code>**</code>, matches zero or more characters, including path separators.</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr valign="top"><td>Example:</td><td><code>ExcludeGlob("Music/Country/**.mp3")</code><br/><br/>
+        This excludes all mp3 files in <code>Music/Country</code> and in all
+        subdirectories.</td></tr>
+	</table><br/>
+    </dd>
+    
+    <dt>ExcludeRegexp(pattern)</dt>
+    <dd>
+    <p>Exclude files matching the regular expression <code>pattern</code> from the
+       archive. Several exclude patterns can be specified. The pattern matching is
+       done against the path relative to <code>BaseDir()</code>. If a directory
+       matches an exclude pattern, it is not recursed into.</p>
+    <p>For more information about regular expression syntax in Python, see
+       <a href="http://www.python.org/doc/current/lib/re-syntax.html">this page</a>.</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr valign="top"><td>Example:</td><td><code>ExcludeRegexp("Music/Country/.*\\.mp3")</code><br/><br/>
+        This excludes all mp3 files in <code>Music/Country</code> and in all subdirectories
+        (note escaping of "\").</td></tr>
+    </table><br/>
+    </dd>
+    
+    <dt>HashFunction(hash)</dt>
+    <dd>
+    <p>Specify the hash function to be used to check files for content modification.
+       Currently supported: <code>md5</code> (128 bits), <code>sha1</code> (160 bits).</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr><td>Default:</td><td><code>md5</code></td></tr>
+        <tr><td>Example:</td><td><code>HashFunction("sha1")</code></td></tr>
+    </table><br/>
+    </dd>
+    
+    <dt>Input(path)</dt>
+    <dd>
+    <p>Add a file or directory to be archived. Several inputs can be specified.
+       The use of a directory name always implies that the subdirectories below should be
+       included in the archive. <code>path</code> must be a relative path specification,
+       and is interpreted relative to <code>BaseDir()</code>.</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr><td>Example:</td><td><code>Input("Music")</code></td></tr>
+    </table><br/>
+    </dd>
+
+    <dt>MediumSize(size)</dt>
+    <dd>
+    <p>Set the maximum size of an archive to <code>size</code>. This is typically used to
+       span a backup over multiple media.</p>
+    <p><code>size</code> is an integer giving the size in bytes, or a string containing a
+       floating-point value optionally followed by the suffix <code>k</code>, <code>M</code>, 
+       <code>G</code>, <code>T</code>, <code>P</code>, <code>E</code>.</p>
+    <table>
+        <colgroup><col width="90"/></colgroup>
+        <tr><td>Default:</td><td><code>0</code> (no limit)</td></tr>
+        <tr><td>Example:</td><td><code>MediumSize("4.2G")</code></td></tr>
+    </table><br/>
+    </dd>
+                
+    <dt>Sort(sort)</dt>
+    <dd>
+    <p>Specify how files should be selected for inclusion when creating an archive. 
+       <code>sort</code> can be either <code>time</code> (the default) or 
+       <code>alpha</code>.</p>
+    <p>When creating a new archive, the list of files to be included is sorted according
+       to this criterion, either by modification time if <code>time</code> was specified,
+       or by path name if <code>alpha</code> was specified. Then, files are selected
+       for inclusion starting at the top of the list, until they fill one medium. The 
+       remaining files are left for a subsequent creation run.</p>
+    <p>In other words, <code>time</code> stores the oldest files first, and 
+       <code>alpha</code> keeps files more or less together (by directory).</p>
+    <table>
+    	<colgroup><col width="90"/></colgroup>
+        <tr><td>Default:</td><td><code>time</code></td></tr>
+        <tr><td>Example:</td><td><code>Sort("alpha")</code></td></tr>
+    </table>
+    </dd>
+</dl>
+
+<p>Here are a few examples of configuration files.</p>
+<ul>
+    <li><p>Archive an mp3 collection:</p>
+    <pre>
+    MediumSize("690M")                          # Fit archives on CD-R
+    HashFunction("sha1")                        # Use a good hash
+    BaseDir("/home")                            # cd to this directory
+    Input("Music")                              # Archive this tree
+    Exclude("Music/atrontc.vtc")                # Exclude generated files
+    Exclude("Music/Playlists/*.m3u")
+    </pre>
+    </li>
+    <li><p>Archive a digital photo and video collection. Note how backslashes are escaped
+           in Python strings. For more information about regular expressions and Python
+           strings, see
+           <a href="http://www.python.org/doc/current/lib/module-re.html">this page</a>.</p>
+    <pre>
+    MediumSize("690M")                          # Fit archives on CD-R
+    HashFunction("sha1")                        # Use a good hash
+    Compress("gz")                              # Use a fast compressor
+    BaseDir("/home/mirror/hobbes")              # cd to this directory
+    Input("pictures")                           # Archive photos
+    Input("videos")                             #   and videos
+    Discarded(2, 3)                             # Archives 2 and 3 have been discarded
+    # Exclude thumbnails and small versions that are generated
+    Exclude("pictures**/thumb/t_*.jpg")
+    ExcludeRegexp("pictures/([^/]+/)*small/s_[^/]+\\.jpg")
+    </pre>
+    </li>
+</ul>
+
+
+<h2><a name="faq">Frequently asked questions</a></h2>
+<ul>
+    <li><p><b>I lost a backup medium. How will my incremental backup remain consistent?</b></p>
+    <p>Just mark the descriptor corresponding to the lost medium as discarded in the 
+       configuration file, and make a new backup. The files that were stored on the lost medium
+       and still exist will be put on the new medium.</p>
+    </li>
+    <li><p><b>Only a subset of the files that need to be archived fit on a medium. How
+        does sync2cd select which files are to be stored on the next archive?</b></p>
+    <p>In versions up to 0.9, the oldest files were stored on the next archive (based on 
+       the file modification time). Starting with version 1.0, the selection criterion
+       can be selected with the <code>--sort</code> option and the <code>Sort()</code>
+       configuration function. Currently, the only alternative is to select files 
+       by depth-first alphabetical traversal order.</p>
+    </li>
+    <li><p><b>Where are the archive descriptors created?</b></p>
+    <p>They are created in the same directory as the configuration file. The file name of
+       the descriptors is the concatenation of the configuration file name, a dot, 
+       the padded archive number, and a <code>.gz</code> extension if compression is enabled.
+       For example, if the configuration file is <code>Music</code>, the descriptors will be 
+       named <code>Music.0001.gz</code>, <code>Music.0002.gz</code>, and so on.</p>
+    </li>
+    <li><p><b>Do I have to keep all created archive descriptors?</b></p>
+    <p>No, you only need to keep the last one. sync2cd determines which files have to be
+       archived during a creation operation by comparing the live filesystem with the 
+       contents of the last archive descriptor it can find.</p>
+    </li>
+    <li><p><b>What medium size should I specify to record a DVD?</b></p>
+    <p>The <code>growisofs</code> manpage specifies the capacity of a DVD as 4'700'000'000
+       bytes, or 4.377GB. So 4.2GB should be a reasonable value (considering that the
+       archive descriptor, as well as the directory structure, will also take some space).</p>
+    </li>
+    <li><p><b>Backup's good. Now, where's restore?</b></p>
+    <p>Well, the whole point of a backup is never to use it, right? ;-)</p>
+    <p>Seriously, restore functionality has been added as of version 0.9. I would be
+       happy to receive some feedback if it works or doesn't work for you.</p>
+    </li>
+    <li><p><b>What is the parameter that is passed to the mounter script on restore?</b></p>
+    <p>It is the base name of the current archive descriptor, without <code>.gz</code> extension
+       (even if compression is enabled). For example, if the configuration file is 
+       <code>/home/joe/sync2cd/Music</code> and restoring needs archives 7 and 12, the script 
+       will be called first with <code>Music.0007</code>, then with <code>Music.0012</code>, 
+       and finally with <code>Music.0000</code> (the 0th descriptor indicates the end of the 
+       restore operation, and allows e.g. ejecting the last medium).</p>
+    </li>
+    <li><p><b>I accidentally deleted one of the numbered archive descriptors. Can I re-create 
+        it from the backup medium?</b></p>
+    <p><code>sync2cd</code> adds a hidden directory at the root of every backup medium,
+       named <code>.sync2cd</code>, that contains the configuration file, the archive 
+       descriptor for the medium, as well as the <code>sync2cd.py</code> script itself.
+       So you can get the descriptor back from there. The hidden directory is added
+       with both <code>--graft-list</code> and <code>--copy</code>.</p>
+    </li>
+</ul>
+
+
+<h2><a name="to_do">To do</a></h2>
+<p>The following features will be added to sync2cd as time permits.</p>
+<ul>
+    <li>Archive verification functionality</li>
+</ul>
+
+
+<h2><a name="feedback">Feedback</a></h2>
+<p>If you are using or trying to use sync2cd, I would be happy to hear from you!
+   I'm especially interested in the following:</p>
+<ul>
+    <li>Bug reports (ideally, with a test case and a patch correcting the problem)</li>
+    <li>Success reports (especially on other platforms than I use)</li>
+    <li>Improvement suggestions</li>
+</ul>
+<p>In any case, just drop me an
+   <a href="#" onmouseover="this.href='mai' + 'lto:' + 'soft' + 'ware@c-s' + 'pace.' + 'org'">e-mail</a>.</p>
+
+
+<h2><a name="links">Links</a></h2>
+<ul>
+    <li>The awesome <b>Python</b> programming language: <a href="http://www.python.org/">http://www.python.org/</a></li>
+    <li><b>rsync</b>, a fast incremental file transfer tool: <a href="http://samba.anu.edu.au/rsync/">http://samba.anu.edu.au/rsync/</a></li>
+    <li><b>rdiff-backup</b>, a backup program combining the features of a mirror with an
+        incremental backup: <a href="http://www.nongnu.org/rdiff-backup/">http://www.nongnu.org/rdiff-backup/</a></li>
+</ul>
+
+
+<p>&nbsp;</p>
+<hr/>
+<p>Copyright (C) 2007 Remy Blank</p>
+
+</body>
+</html>
