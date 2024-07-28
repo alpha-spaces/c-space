@@ -1,0 +1,10 @@
+# Copyright 2024 Remy Blank <remy@c-space.org>
+# SPDX-License-Identifier: CC-BY-NC-SA-4.0
+
+syntax: glob
+*.orig
+__pycache__
+
+syntax: regexp
+^htdocs/download/([^/]+/)*index.html$
+^tmp/
